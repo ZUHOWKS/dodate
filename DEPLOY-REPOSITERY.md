@@ -141,7 +141,7 @@ curl -fsSL http://VOTRE-SERVEUR:PORT/apt/public.key | sudo gpg --dearmor -o /usr
 
 ```bash
 # Ajouter le repository à vos sources APT
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://VOTRE-SERVEUR:PORT/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://VOTRE-SERVEUR:PORT/apt dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
 ```
 
 ### 3. Installer le package

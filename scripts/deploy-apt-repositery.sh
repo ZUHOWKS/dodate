@@ -136,7 +136,7 @@ if [ "$QUIET_MODE" != "--quiet" ]; then
     echo ""
     echo -e "${BLUE}ℹ️  Pour utiliser ce dépôt sur un client :${NC}"
     echo -e "${BLUE}ℹ️    curl -fsSL http://<your-ip>:<port>/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg${NC}"
-    echo -e "${BLUE}ℹ️    echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://<your-ip>:<port>/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list${NC}"
+    echo -e "${BLUE}ℹ️    echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://<your-ip>:<port>/apt dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list${NC}"
     echo -e "${BLUE}ℹ️    sudo apt update && sudo apt install dodate${NC}"
 fi
 
