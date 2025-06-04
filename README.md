@@ -42,6 +42,12 @@ cp dodate.deb repo/binary/
 dpkg-scanpackages repo/binary /dev/null | gzip -9c > repo/binary/Packages.gz
 ```
 
+To use this local mirror, add it to your APT sources list:
+
+```bash
+echo "deb [trusted=yes] file://$(pwd)/repo binary/" | sudo tee /etc/apt/sources.list.d/dodate-local.list
+```
+
 You can now install the package using:
 
 ```bash

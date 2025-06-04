@@ -1,15 +1,15 @@
-# 🚀 Guide de déploiement du repository APT Dodate
+# 🚀 Dodate APT Repository Deployment Guide
 
-Ce guide explique comment déployer automatiquement un repository APT pour le package `dodate` en utilisant les scripts fournis.
+This guide explains how to automatically deploy an APT repository for the `dodate` package using the provided scripts.
 
 ---
 
-## 📋 Prérequis
+## 📋 Prerequisites
 
-### 1. Dépendances système
+### 1. System dependencies
 
 ```bash
-# Installer les outils nécessaires
+# Install required tools
 sudo apt update
 sudo apt install -y \
     dpkg-dev \
@@ -18,144 +18,144 @@ sudo apt install -y \
     apache2
 ```
 
-### 2. Clé GPG
+### 2. GPG Key
 
-Vous devez avoir une clé GPG pour signer le repository :
+You must have a GPG key to sign the repository:
 
 ```bash
-# Générer une nouvelle clé GPG (si nécessaire)
+# Generate a new GPG key (if needed)
 gpg --gen-key
 
-# Lister vos clés pour obtenir l'ID
+# List your keys to get the ID
 gpg --list-secret-keys --keyid-format LONG
 
-# Noter l'ID de votre clé (format: XXXXXXXXXXXXXXXX)
+# Note your key's ID (format: XXXXXXXXXXXXXXXX)
 ```
 
 ---
 
-## 🛠️ Scripts disponibles
+## 🛠️ Available scripts
 
 ### 1. `build-dodate-deb.sh`
 
-Construit le package `.deb` avec l'environnement virtuel Python intégré.
+Builds the `.deb` package with the integrated Python virtual environment.
 
 ### 2. `deploy-apt-repositery.sh`
 
-Génère un repository APT local avec signature GPG.
+Generates a local APT repository with GPG signature.
 
 ### 3. `apache2-auto-deploy.sh`
 
-Script principal de déploiement automatique qui :
+Main automatic deployment script that:
 
-- Construit le package (si nécessaire)
-- Génère le repository APT
-- Configure Apache2
-- Déploie le repository
+- Builds the package (if needed)
+- Generates the APT repository
+- Configures Apache2
+- Deploys the repository
 
 ---
 
-## 🚀 Déploiement rapide
+## 🚀 Quick deployment
 
-### Méthode 1 : Déploiement automatique complet
+### Method 1: Full automatic deployment
 
 ```bash
-# Rendre les scripts exécutables
+# Make scripts executable
 chmod +x scripts/*.sh
 
-# Déploiement avec construction automatique du package
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID
+# Deploy with automatic package build
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID
 
-# Exemple avec votre clé GPG
+# Example with your GPG key
 sudo ./scripts/apache2-auto-deploy.sh 82B7DA8E7DDFC3E0D77C6D6C461A393C63B5DF4A
 ```
 
-### Méthode 2 : Déploiement avec package existant
+### Method 2: Deployment with an existing package
 
 ```bash
-# Si vous avez déjà un package .deb
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID chemin/vers/dodate.deb
+# If you already have a .deb package
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID path/to/dodate.deb
 
-# Exemple
+# Example
 sudo ./scripts/apache2-auto-deploy.sh 82B7DA8E7DDFC3E0D77C6D6C461A393C63B5DF4A dodate_1.0.1_all.deb
 ```
 
-### Méthode 3 : Déploiement sur un port personnalisé
+### Method 3: Deployment on a custom port
 
 ```bash
-# Déployer sur le port 9000 au lieu du port 8000 par défaut
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID "" 9000
+# Deploy on port 9000 instead of the default 8000
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID "" 9000
 
-# Ou avec un package existant sur le port 3000
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID dodate.deb 3000
+# Or with an existing package on port 3000
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID dodate.deb 3000
 ```
 
 ---
 
-## 📊 Ce qui se passe automatiquement
+## 📊 What happens automatically
 
-### 1. Construction du package
+### 1. Package build
 
-- Création d'un environnement virtuel Python
-- Installation de `pytz` dans l'environnement virtuel
-- Construction du package `.deb`
+- Creation of a Python virtual environment
+- Installation of `pytz` in the virtual environment
+- Building the `.deb` package
 
-### 2. Génération du repository
+### 2. Repository generation
 
-- Structure Debian standard (`dists/`, `pool/`)
-- Génération des fichiers `Packages`, `Release`
-- Signature GPG (`Release.gpg`, `InRelease`)
-- Export de la clé publique
+- Standard Debian structure (`dists/`, `pool/`)
+- Generation of `Packages`, `Release` files
+- GPG signature (`Release.gpg`, `InRelease`)
+- Export of the public key
 
-### 3. Configuration Apache
+### 3. Apache configuration
 
-- Création du VirtualHost sur le port spécifié
-- Configuration des permissions
-- Activation des modules nécessaires
-- Redémarrage d'Apache2
-
----
-
-## 🌐 Accès au repository
-
-Après déploiement, votre repository sera accessible à :
-
-- **URL principale** : `http://votre-serveur:PORT/apt/`
-- **Clé publique** : `http://votre-serveur:PORT/apt/public.key`
-- **Packages** : `http://votre-serveur:PORT/apt/dodate/stable/main/binary-all/`
-
-**Port par défaut** : 8000
+- Creation of the VirtualHost on the specified port
+- Permission configuration
+- Activation of required modules
+- Apache2 restart
 
 ---
 
-## 💻 Configuration d'un client
+## 🌐 Repository access
 
-### 1. Ajouter la clé GPG
+After deployment, your repository will be accessible at:
+
+- **Main URL**: `http://your-server:PORT/apt/`
+- **Public key**: `http://your-server:PORT/apt/public.key`
+- **Packages**: `http://your-server:PORT/apt/dodate/stable/main/binary-all/`
+
+**Default port**: 8000
+
+---
+
+## 💻 Client configuration
+
+### 1. Add the GPG key
 
 ```bash
-# Télécharger et installer la clé publique
-curl -fsSL http://VOTRE-SERVEUR:PORT/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
+# Download and install the public key
+curl -fsSL http://YOUR-SERVER:PORT/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
 ```
 
-### 2. Ajouter le repository
+### 2. Add the repository
 
 ```bash
-# Ajouter le repository à vos sources APT
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://VOTRE-SERVEUR:PORT/apt dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+# Add the repository to your APT sources
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-SERVER:PORT/apt dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
 ```
 
-### 3. Installer le package
+### 3. Install the package
 
 ```bash
-# Mettre à jour et installer
+# Update and install
 sudo apt update
 sudo apt install dodate
 ```
 
-### Exemple complet
+### Full example
 
 ```bash
-# Pour un serveur sur 192.168.1.100 port 8000
+# For a server at 192.168.1.100 port 8000
 curl -fsSL http://192.168.1.100:8000/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
 echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://192.168.1.100:8000/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update
@@ -164,40 +164,40 @@ sudo apt install dodate
 
 ---
 
-## 🔧 Déploiement manuel étape par étape
+## 🔧 Manual step-by-step deployment
 
-Si vous préférez contrôler chaque étape :
+If you prefer to control each step:
 
-### 1. Construire le package
+### 1. Build the package
 
 ```bash
 ./scripts/build-dodate-deb.sh
 ```
 
-### 2. Générer le repository
+### 2. Generate the repository
 
 ```bash
-./scripts/deploy-apt-repositery.sh dodate_1.0.1_all.deb VOTRE_GPG_KEY_ID
+./scripts/deploy-apt-repositery.sh dodate_1.0.1_all.deb YOUR_GPG_KEY_ID
 ```
 
-### 3. Déployer manuellement
+### 3. Manual deployment
 
 ```bash
-# Copier vers Apache
+# Copy to Apache
 sudo cp -r dodate/* /var/www/html/apt/
 sudo chown -R www-data:www-data /var/www/html/apt/
 sudo chmod -R 755 /var/www/html/apt/
 
-# Configurer Apache (voir configuration ci-dessous)
+# Configure Apache (see configuration below)
 ```
 
 ---
 
-## ⚙️ Configuration Apache manuelle
+## ⚙️ Manual Apache configuration
 
-Si vous voulez configurer Apache manuellement :
+If you want to configure Apache manually:
 
-### 1. Créer le VirtualHost
+### 1. Create the VirtualHost
 
 ```bash
 sudo nano /etc/apache2/sites-available/apt-repo-8000.conf
@@ -213,73 +213,73 @@ sudo nano /etc/apache2/sites-available/apt-repo-8000.conf
         AllowOverride None
         Require all granted
 
-        # Headers pour les fichiers APT
+        # Headers for APT files
         <FilesMatch "\.(deb|gz|gpg)$">
             Header set Cache-Control "public, max-age=3600"
         </FilesMatch>
 
-        # Type MIME pour les fichiers .deb
+        # MIME type for .deb files
         <FilesMatch "\.deb$">
             Header set Content-Type "application/vnd.debian.binary-package"
         </FilesMatch>
     </Directory>
 
-    # Logs spécifiques au repository
+    # Repository-specific logs
     ErrorLog ${APACHE_LOG_DIR}/apt-repo-8000_error.log
     CustomLog ${APACHE_LOG_DIR}/apt-repo-8000_access.log combined
 </VirtualHost>
 ```
 
-### 2. Activer la configuration
+### 2. Enable the configuration
 
 ```bash
-# Ajouter le port
+# Add the port
 echo "Listen 8000" | sudo tee -a /etc/apache2/ports.conf
 
-# Activer les modules
+# Enable modules
 sudo a2enmod headers
 sudo a2enmod dir
 
-# Activer le site
+# Enable the site
 sudo a2ensite apt-repo-8000.conf
 
-# Redémarrer Apache
+# Restart Apache
 sudo systemctl restart apache2
 ```
 
 ---
 
-## 🔍 Vérification et tests
+## 🔍 Verification and tests
 
-### 1. Vérifier Apache
+### 1. Check Apache
 
 ```bash
-# Statut d'Apache
+# Apache status
 sudo systemctl status apache2
 
-# Vérifier les ports en écoute
+# Check listening ports
 sudo netstat -tlnp | grep apache2
 ```
 
-### 2. Tester le repository
+### 2. Test the repository
 
 ```bash
-# Tester l'accès HTTP
+# Test HTTP access
 curl -I http://localhost:8000/apt/
 
-# Tester la clé publique
+# Test the public key
 curl -I http://localhost:8000/apt/public.key
 
-# Tester les packages
+# Test the packages
 curl -I http://localhost:8000/apt/dodate/stable/main/binary-all/Packages.gz
 ```
 
-### 3. Tester l'installation
+### 3. Test installation
 
 ```bash
-# Sur une machine cliente
-curl -fsSL http://VOTRE-IP:8000/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://VOTRE-IP:8000/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+# On a client machine
+curl -fsSL http://YOUR-IP:8000/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-IP:8000/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update
 apt list dodate
 sudo apt install dodate
@@ -288,81 +288,81 @@ dodate
 
 ---
 
-## 🚨 Dépannage
+## 🚨 Troubleshooting
 
-### Problèmes courants
+### Common issues
 
-#### 1. Erreur de permissions sur le fichier .deb
+#### 1. Permission error on the .deb file
 
 ```bash
-# Si vous avez l'erreur "_apt couldn't be accessed by user"
+# If you get the error "_apt couldn't be accessed by user"
 sudo chmod 644 package.deb
 sudo chown root:root package.deb
 
-# Ou installer depuis le repository au lieu du fichier local
+# Or install from the repository instead of the local file
 sudo apt remove --purge dodate
 sudo apt update
 sudo apt install dodate
 ```
 
-#### 2. Erreur de permissions du repository
+#### 2. Repository permission error
 
 ```bash
 sudo chown -R www-data:www-data /var/www/html/apt/
 sudo chmod -R 755 /var/www/html/apt/
 ```
 
-#### 2. Apache ne démarre pas
+#### 2. Apache does not start
 
 ```bash
-# Vérifier la configuration
+# Check the configuration
 sudo apache2ctl configtest
 
-# Voir les logs d'erreur
+# View error logs
 sudo tail -f /var/log/apache2/error.log
 ```
 
-#### 3. Clé GPG non reconnue
+#### 3. GPG key not recognized
 
 ```bash
-# Vérifier que la clé existe
+# Check that the key exists
 gpg --list-secret-keys
 
-# Régénérer la clé publique
-gpg --export -a VOTRE_GPG_KEY_ID > /var/www/html/apt/public.key
+# Regenerate the public key
+gpg --export -a YOUR_GPG_KEY_ID > /var/www/html/apt/public.key
 ```
 
-#### 4. Port déjà utilisé
+#### 4. Port already in use
 
 ```bash
-# Vérifier quel processus utilise le port
+# Check which process uses the port
 sudo netstat -tlnp | grep :8000
 
-# Utiliser un autre port
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID "" 9000
+# Use another port
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID "" 9000
 ```
 
 ---
 
-## 🔄 Mise à jour du repository
+## 🔄 Repository update
 
-Pour ajouter une nouvelle version de votre package :
+To add a new version of your package:
 
 ```bash
-# Construire la nouvelle version
+# Build the new version
 ./scripts/build-dodate-deb.sh
 
-# Redéployer automatiquement
-sudo ./scripts/apache2-auto-deploy.sh VOTRE_GPG_KEY_ID dodate_1.0.2_all.deb
+# Redeploy automatically
+sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID dodate_1.0.2_all.deb
 
-# Ou manuellement
-./scripts/deploy-apt-repositery.sh dodate_1.0.2_all.deb VOTRE_GPG_KEY_ID
+# Or manually
+./scripts/deploy-apt-repositery.sh dodate_1.0.2_all.deb YOUR_GPG_KEY_ID
 sudo cp -r dodate/* /var/www/html/apt/
 ```
 
 ---
 
-## 📝 Structure finale du repository
+## 📝 Final repository structure
 
 ```
 /var/www/html/apt/
@@ -384,22 +384,22 @@ sudo cp -r dodate/* /var/www/html/apt/
 
 ---
 
-## 🎯 Commandes de référence rapide
+## 🎯 Quick reference commands
 
 ```bash
-# Déploiement complet automatique
+# Full automatic deployment
 sudo ./scripts/apache2-auto-deploy.sh GPG_KEY_ID
 
-# Avec port personnalisé
+# With custom port
 sudo ./scripts/apache2-auto-deploy.sh GPG_KEY_ID "" 9000
 
-# Construction seule
+# Build only
 ./scripts/build-dodate-deb.sh
 
-# Repository seul
+# Repository only
 ./scripts/deploy-apt-repositery.sh package.deb GPG_KEY_ID
 
-# Test client
+# Client test
 curl -fsSL http://IP:PORT/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
 echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://IP:PORT/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update && sudo apt install dodate
@@ -407,4 +407,4 @@ sudo apt update && sudo apt install dodate
 
 ---
 
-**🎉 Votre repository APT Dodate est maintenant prêt et accessible !**
+**🎉 Your Dodate APT repository is now ready and accessible!**

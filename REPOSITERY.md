@@ -1,14 +1,14 @@
 # 📦 REPOSITORY.md
 
-**Documentation du dépôt APT pour l’application `dodate`**
+**Documentation for the APT repository for the `dodate` application**
 
-Cette documentation explique la mise en place, la structure, la sécurisation et l’utilisation d’un **dépôt APT personnalisé** pour l’application `dodate`. Elle suit les recommandations officielles de [Debian sur la structure des dépôts APT](https://wiki.debian.org/DebianRepository/Format).
+This documentation explains the setup, structure, security, and usage of a **custom APT repository** for the `dodate` application. It follows the official [Debian recommendations on APT repository structure](https://wiki.debian.org/DebianRepository/Format).
 
 ---
 
-## 📁 Structure du dépôt
+## 📁 Repository Structure
 
-Le dépôt respecte l’arborescence recommandée par Debian :
+The repository follows the recommended Debian hierarchy:
 
 ```
 /var/www/html/apt/
@@ -29,53 +29,53 @@ Le dépôt respecte l’arborescence recommandée par Debian :
 
 ### ✅ Justifications
 
-- **`dists/`** : Contient les fichiers d’index et de métadonnées utilisés par APT (`Release`, `InRelease`, `Release.gpg`, etc.).
-- **`pool/`** : Emplacement des fichiers `.deb`. Permet une gestion centralisée et non redondante des paquets.
-- **`public.key`** : Clé publique GPG exportée en ASCII-armored, permettant aux clients APT de vérifier l’authenticité du dépôt.
+- **`dists/`**: Contains the index and metadata files used by APT (`Release`, `InRelease`, `Release.gpg`, etc.).
+- **`pool/`**: Location for `.deb` files. Allows centralized and non-redundant package management.
+- **`public.key`**: GPG public key exported in ASCII-armored format, allowing APT clients to verify the repository's authenticity.
 
 ---
 
-## 🛠️ Génération des fichiers d’index
+## 🛠️ Index File Generation
 
-La génération des métadonnées du dépôt est réalisée avec les outils standards Debian :
+The repository metadata is generated using standard Debian tools:
 
 ```bash
-# Depuis binary-all/
+# From binary-all/
 dpkg-scanpackages -m . > Packages
 gzip -k -f Packages
 
-# Depuis dists/dodate/
+# From dists/dodate/
 apt-ftparchive release . > Release
 ```
 
 ### ✅ Justification
 
-- `dpkg-scanpackages` crée le fichier `Packages`, utilisé pour lister les paquets disponibles.
-- `apt-ftparchive` permet de générer un fichier `Release` avec les checksums nécessaires (`MD5Sum`, `SHA256`, etc.).
-- `gzip` permet de proposer une version compressée de `Packages`, comme attendu par les clients APT.
+- `dpkg-scanpackages` creates the `Packages` file, used to list available packages.
+- `apt-ftparchive` generates a `Release` file with the necessary checksums (`MD5Sum`, `SHA256`, etc.).
+- `gzip` provides a compressed version of `Packages`, as expected by APT clients.
 
 ---
 
-## 🔐 Signature cryptographique
+## 🔐 Cryptographic Signature
 
-Le fichier `Release` est signé avec GPG pour permettre la vérification par les clients :
+The `Release` file is signed with GPG to allow client verification:
 
 ```bash
-gpg --default-key "<ID_CLÉ>" -abs -o Release.gpg Release
-gpg --default-key "<ID_CLÉ>" --clearsign -o InRelease Release
+gpg --default-key "<KEY_ID>" -abs -o Release.gpg Release
+gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
 ```
 
 ### ✅ Justification
 
-- `Release.gpg` : signature détachée.
-- `InRelease` : signature intégrée.
-- Ces signatures assurent l’intégrité et l’authenticité du dépôt, comme recommandé par Debian.
+- `Release.gpg`: detached signature.
+- `InRelease`: inline signature.
+- These signatures ensure the integrity and authenticity of the repository, as recommended by Debian.
 
 ---
 
-## 🌍 Hébergement via Apache2
+## 🌍 Hosting via Apache2
 
-Le dépôt est servi via HTTP grâce à un serveur Apache configuré sur un port dédié (ex. : `9000`). Le VirtualHost associé permet de séparer les services et d'ajuster la configuration :
+The repository is served over HTTP using an Apache server configured on a dedicated port (e.g., `9000`). The associated VirtualHost allows for service separation and fine-tuned configuration:
 
 ```apache
 <VirtualHost *:9000>
@@ -91,39 +91,39 @@ Le dépôt est servi via HTTP grâce à un serveur Apache configuré sur un port
 
 ### ✅ Justification
 
-- L’exposition du dépôt via HTTP est la méthode la plus courante.
-- L’utilisation d’un VirtualHost dédié assure la modularité du serveur web et permet une configuration fine.
+- Exposing the repository via HTTP is the most common method.
+- Using a dedicated VirtualHost ensures modularity of the web server and allows for fine configuration.
 
 ---
 
-## 🔑 Clé GPG publique
+## 🔑 Public GPG Key
 
-La clé utilisée pour signer les métadonnées est exportée en format ASCII et rendue accessible :
+The key used to sign the metadata is exported in ASCII format and made accessible:
 
 ```bash
-gpg --export -a "Nom de la clé" > /var/www/html/apt/public.key
+gpg --export -a "Key Name" > /var/www/html/apt/public.key
 ```
 
-URL d'accès (réseau Polytech) : `http://cygnus.dopolytech.fr:9000/public.key`
+Access URL (Polytech network): `http://cygnus.dopolytech.fr:9000/public.key`
 
 ---
 
-## 🧩 Utilisation sur une machine cliente Debian/Ubuntu
+## 🧩 Usage on a Debian/Ubuntu Client Machine
 
-### 1. Import de la clé GPG :
+### 1. Import the GPG key:
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL http://cygnus.dopolytech.fr:9000/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/dodate.gpg > /dev/null
 ```
 
-### 2. Ajout du dépôt APT :
+### 2. Add the APT repository:
 
 ```bash
 echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9000/ dodate main" | sudo tee /etc/apt/sources.list.d/dodate.list
 ```
 
-### 3. Mise à jour de la liste des paquets :
+### 3. Update the package list:
 
 ```bash
 sudo apt update
@@ -131,43 +131,43 @@ sudo apt update
 
 ### ✅ Justification
 
-- Le placement de la clé dans `/etc/apt/keyrings/` et l’utilisation de l’option `signed-by` assurent que seule cette clé sera utilisée pour ce dépôt, renforçant la sécurité.
-- L’option `sources.list.d/` permet une gestion propre et modulaire des sources.
+- Placing the key in `/etc/apt/keyrings/` and using the `signed-by` option ensures that only this key will be used for this repository, enhancing security.
+- The use of `sources.list.d/` allows for clean and modular source management.
 
 ---
 
-## 🔄 Automatisation du dépôt
+## 🔄 Repository Automation
 
-Des scripts automatisent les étapes suivantes :
+Scripts automate the following steps:
 
-- **build-dodate-deb.sh** : génère le paquet `.deb` de l’application.
-- **deploy-apt-repositery.sh** : met à jour les fichiers `Packages`, `Release`, `InRelease` et `Release.gpg`.
-- **apache2-auto-deploy.sh** : déploie le dépôt sur le serveur Apache.
+- **build-dodate-deb.sh**: generates the application's `.deb` package.
+- **deploy-apt-repositery.sh**: updates the `Packages`, `Release`, `InRelease`, and `Release.gpg` files.
+- **apache2-auto-deploy.sh**: deploys the repository on the Apache server.
 
 ### ✅ Justification
 
-Automatiser ces étapes garantit :
+Automating these steps ensures:
 
-- Une régularité dans le format et le contenu du dépôt.
-- Moins d’erreurs humaines.
-- Un déploiement rapide en cas de mise à jour de version.
-
----
-
-## ✅ Conformité Debian
-
-Ce dépôt :
-
-- Suit l’arborescence Debian (`dists/`, `pool/`, clés GPG).
-- Utilise les outils Debian (`dpkg-scanpackages`, `apt-ftparchive`, `gpg`).
-- Met en œuvre des mécanismes de sécurité adaptés (`signed-by`, signature GPG).
-- Fournit une documentation claire pour les utilisateurs clients.
-
-Il est donc **entièrement conforme** aux standards Debian.
+- Consistency in the repository's format and content.
+- Fewer human errors.
+- Fast deployment in case of version updates.
 
 ---
 
-## 📚 Ressources utiles
+## ✅ Debian Compliance
+
+This repository:
+
+- Follows the Debian hierarchy (`dists/`, `pool/`, GPG keys).
+- Uses Debian tools (`dpkg-scanpackages`, `apt-ftparchive`, `gpg`).
+- Implements appropriate security mechanisms (`signed-by`, GPG signature).
+- Provides clear documentation for client users.
+
+It is therefore **fully compliant** with Debian standards.
+
+---
+
+## 📚 Useful Resources
 
 - [DebianRepository/Format — Debian Wiki](https://wiki.debian.org/DebianRepository/Format)
 - [SecureApt — Debian Wiki](https://wiki.debian.org/SecureApt)
@@ -175,4 +175,4 @@ Il est donc **entièrement conforme** aux standards Debian.
 
 ---
 
-Si vous avez des questions ou souhaitez contribuer à l’amélioration du dépôt, n’hésitez pas à ouvrir une **issue** ou une **pull request**.
+If you have any questions or wish to contribute to improving the repository, feel free to open an **issue** or a **pull request**.
