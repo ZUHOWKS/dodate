@@ -5,7 +5,7 @@ set -e  # Arrêter le script en cas d'erreur
 
 REPO_NAME="dodate"
 REL_POOL_DIR="pool"
-REL_DIST_DIR="dists/stable"
+REL_DIST_DIR="dists/dodate/stable"
 ARCH="all"
 COMPONENT="main"
 
