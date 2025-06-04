@@ -86,12 +86,13 @@ print_info "📦 Package: $(basename "$DEB_FILE")"
 print_info "🔑 Clé GPG: $GPG_KEY_ID"
 
 mkdir -p "$REPO_NAME"
+
+mkdir -p "$REPO_NAME/$REL_POOL_DIR/$REPO_NAME"
+mkdir -p "$REPO_NAME/$REL_DIST_DIR/$COMPONENT/binary-$ARCH"
+
+cp "$DEB_FILE" "$REPO_NAME/$REL_POOL_DIR/$REPO_NAME/"
+
 cd "$REPO_NAME"
-
-mkdir -p "$REL_POOL_DIR/$REPO_NAME"
-mkdir -p "$REL_DIST_DIR/$COMPONENT/binary-$ARCH"
-
-cp "$DEB_FILE" "$REL_POOL_DIR/$REPO_NAME/"
 
 # Générer le fichier Packages
 apt-ftparchive packages "$REL_POOL_DIR" > "$REL_DIST_DIR/$COMPONENT/binary-$ARCH/Packages"
