@@ -15,10 +15,7 @@ sudo apt install -y \
     dpkg-dev \
     apt-utils \
     gnupg2 \
-    apache2 \
-    python3 \
-    python3-venv \
-    curl
+    apache2
 ```
 
 ### 2. Clé GPG
