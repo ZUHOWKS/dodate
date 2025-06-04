@@ -53,14 +53,6 @@ check_dependencies() {
         missing_deps+=("dpkg-dev")
     fi
 
-    if ! command -v python3 &> /dev/null; then
-        missing_deps+=("python3")
-    fi
-
-    if ! command -v python3-venv &> /dev/null; then
-        missing_deps+=("python3-venv")
-    fi
-
     if [ ${#missing_deps[@]} -gt 0 ]; then
         print_error "Dépendances manquantes: ${missing_deps[*]}"
         echo "Installez-les avec: sudo apt install ${missing_deps[*]}"
@@ -80,17 +72,12 @@ mkdir -p "$BUILD_DIR"
 print_info "📋 Copie de la structure du package..."
 cp -r "$PROJECT_DIR/dodate" "$BUILD_DIR/"
 
-# Créer l'environnement virtuel dans le package
-print_info "🐍 Création de l'environnement virtuel..."
-cd "$BUILD_DIR/dodate/usr/lib/dodate"
-python3 -m venv dodate_env
-
-# Activer l'environnement virtuel et installer les dépendances
-print_info "📦 Installation des dépendances Python..."
-source dodate_env/bin/activate
-pip install --upgrade pip
-pip install pytz
-deactivate
+# Vérifier que l'environnement virtuel existe
+if [ -d "$BUILD_DIR/dodate/usr/lib/dodate/dodate_env" ]; then
+    print_success "Environnement virtuel trouvé dans le package"
+else
+    print_warning "Aucun environnement virtuel trouvé - package sans dépendances Python"
+fi
 
 # Mettre à jour les permissions
 print_info "🔐 Configuration des permissions..."
@@ -106,6 +93,10 @@ dpkg-deb --build dodate
 # Copier le package dans le répertoire de sortie
 OUTPUT_FILE="$PROJECT_DIR/${PACKAGE_NAME}_${VERSION}_all.deb"
 cp "$BUILD_DIR/dodate.deb" "$OUTPUT_FILE"
+
+# Définir les bonnes permissions pour APT
+chmod 644 "$OUTPUT_FILE"
+chown $USER:$USER "$OUTPUT_FILE"
 
 print_success "Package construit avec succès!"
 print_info "📦 Package disponible : $OUTPUT_FILE"
