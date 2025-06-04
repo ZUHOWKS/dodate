@@ -4,6 +4,12 @@ This repository provides the necessary structure and tooling to package the `dod
 
 `dodate` is a small utility that displays the current local time as well as the time in Réunion Island 🇷🇪.
 
+## 📚 Documentation
+
+- 📋 **[Repository Structure](./REPOSITERY.md)** - Detailed explanation of APT repository design and best practices
+- 🚀 **[Deployment Guide](./DEPLOY-REPOSITERY.md)** - Complete guide for deploying the APT repository with automated scripts
+- 📦 **[Package Build Process](#-build-steps)** - Build instructions for the Debian package (this document)
+
 ---
 
 ## ⚙️ Project Structure
@@ -14,7 +20,7 @@ This repository provides the necessary structure and tooling to package the `dod
 
 ---
 
-## 🛠️ Build Steps
+## 🛠️ Manual Build Steps
 
 ### 1. Build the `.deb` Package
 

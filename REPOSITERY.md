@@ -1,169 +1,178 @@
-# 📦 Mise en place d’un dépôt APT personnalisé pour Dodate
+# 📦 REPOSITORY.md
 
-Ce document décrit la méthode suivie pour concevoir, signer, héberger et rendre disponible un **dépôt APT** selon les bonnes pratiques Debian. Ce dépôt permet aux utilisateurs d’installer facilement l’application `dodate` via `apt`.
+**Documentation du dépôt APT pour l’application `dodate`**
+
+Cette documentation explique la mise en place, la structure, la sécurisation et l’utilisation d’un **dépôt APT personnalisé** pour l’application `dodate`. Elle suit les recommandations officielles de [Debian sur la structure des dépôts APT](https://wiki.debian.org/DebianRepository/Format).
 
 ---
 
-## 🧱 1. Structure du dépôt
+## 📁 Structure du dépôt
 
-Conformément à la [Debian Repository Layout](https://wiki.debian.org/DebianRepository/Format), le dépôt suit cette arborescence classique :
+Le dépôt respecte l’arborescence recommandée par Debian :
 
 ```
-dodate/
+/var/www/html/apt/
 ├── dists/
-│   └── stable/
-│       └── main/
-│           └── binary-all/
-│               ├── Packages
-│               └── Packages.gz
+│   └── dodate/
+│       ├── main/
+│       │   └── binary-all/
+│       │       ├── Packages
+│       │       └── Packages.gz
+│       ├── Release
+│       ├── Release.gpg
+│       └── InRelease
 ├── pool/
 │   └── dodate/
-│       └── dodate_1.0.0_all.deb
+│       └── dodate_1.0.1_all.deb
 └── public.key
 ```
 
-- `dists/` : contient les métadonnées APT (`Packages`, `Release`, signatures...).
-- `pool/` : contient les fichiers `.deb`, classés par nom de package.
-- `public.key` : clé publique GPG utilisée pour la vérification côté client.
+### ✅ Justifications
+
+- **`dists/`** : Contient les fichiers d’index et de métadonnées utilisés par APT (`Release`, `InRelease`, `Release.gpg`, etc.).
+- **`pool/`** : Emplacement des fichiers `.deb`. Permet une gestion centralisée et non redondante des paquets.
+- **`public.key`** : Clé publique GPG exportée en ASCII-armored, permettant aux clients APT de vérifier l’authenticité du dépôt.
 
 ---
 
-## ⚙️ 2. Génération des index de paquets
+## 🛠️ Génération des fichiers d’index
 
-Depuis le dossier `binary-all/`, nous avons généré les fichiers d’index nécessaires au fonctionnement d’APT :
-
-```bash
-dpkg-scanpackages -m . > Packages
-gzip -k -f Packages  # Génère Packages.gz
-```
-
-Le fichier `Packages` référence les `.deb` disponibles et leur checksum.
-
----
-
-## 📋 3. Création du fichier `Release`
-
-Le fichier `Release` permet à APT de connaître la structure et les checksums du dépôt :
+La génération des métadonnées du dépôt est réalisée avec les outils standards Debian :
 
 ```bash
-apt-ftparchive release . > Release
-```
-
----
-
-## 🔐 4. Signature cryptographique
-
-Pour assurer l’intégrité et l’authenticité du dépôt, le fichier `Release` est signé avec une **clé GPG dédiée** :
-
-```bash
-gpg --default-key "<KEY_ID>" -abs -o Release.gpg Release
-gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
-```
-
-- `Release.gpg` est utilisé par APT pour la vérification.
-- `InRelease` combine `Release` et sa signature en un seul fichier lisible.
-
-> 🔐 Bonnes pratiques :
->
-> - Clé GPG dédiée au projet.
-> - Clé exportée en ASCII (`.asc`) ou binaire (`.gpg`) pour les clients.
-> - Signature **obligatoire** pour un usage sécurisé.
-
----
-
-## 🌐 5. Publication HTTP
-
-Le dépôt est hébergé sur un serveur HTTP, accessible via :
-
-```
-http://cygnus.dopolytech.fr/dodate/
-```
-
-Ce répertoire web expose :
-
-- `dists/stable/...` : structure du dépôt
-- `pool/dodate/` : fichiers `.deb`
-- `public.key` : clé publique pour authentifier le dépôt
-
----
-
-## 🗝 6. Publication de la clé publique GPG
-
-Export de la clé publique au format ASCII :
-
-```bash
-gpg --export -a "Dodate Signing Key" > /var/www/html/dodate/public.key
-```
-
-Cette clé peut être importée sur les clients pour vérifier la signature du dépôt.
-
----
-
-## 📥 7. Ajout côté client
-
-### a. Import sécurisé de la clé GPG
-
-```bash
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL http://cygnus.dopolytech.fr/dodate/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/dodate.gpg > /dev/null
-```
-
-### b. Ajout de la source APT
-
-```bash
-echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr/dodate stable main" | sudo tee /etc/apt/sources.list.d/dodate.list
-```
-
-### c. Mise à jour et installation
-
-```bash
-sudo apt update
-sudo apt install dodate
-```
-
----
-
-## 🔄 8. Script de mise à jour automatique
-
-Un script peut être utilisé pour automatiser la régénération des métadonnées et la signature :
-
-```bash
-#!/bin/bash
-
-set -e
-
-REPO_DIR="/var/www/html/dodate"
-DIST_DIR="$REPO_DIR/dists/stable/main/binary-all"
-cd "$DIST_DIR"
-
+# Depuis binary-all/
 dpkg-scanpackages -m . > Packages
 gzip -k -f Packages
 
-cd "$REPO_DIR/dists/stable"
+# Depuis dists/dodate/
 apt-ftparchive release . > Release
-
-gpg --default-key "<KEY_ID>" -abs -o Release.gpg Release
-gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
 ```
 
----
+### ✅ Justification
 
-## ✅ Bonnes pratiques respectées
-
-| Élément                               | État | Détail                                      |
-| ------------------------------------- | ---- | ------------------------------------------- |
-| Structure Debian standard             | ✅   | `dists/`, `pool/`, `binary-all/`            |
-| Clé GPG spécifique au projet          | ✅   | Sécurité et traçabilité                     |
-| Signature `Release.gpg` / `InRelease` | ✅   | Compatible avec les clients modernes        |
-| Public key téléchargeable             | ✅   | Clé accessible publiquement                 |
-| Séparation claire `stable` / `main`   | ✅   | Bonne pratique pour la gestion des versions |
-| Ajout sécurisé via `signed-by`        | ✅   | Conforme aux normes modernes APT            |
+- `dpkg-scanpackages` crée le fichier `Packages`, utilisé pour lister les paquets disponibles.
+- `apt-ftparchive` permet de générer un fichier `Release` avec les checksums nécessaires (`MD5Sum`, `SHA256`, etc.).
+- `gzip` permet de proposer une version compressée de `Packages`, comme attendu par les clients APT.
 
 ---
 
-## 🔮 Évolutions possibles
+## 🔐 Signature cryptographique
 
-- Support multi-architecture (`binary-amd64`, `binary-arm64`, etc.).
-- Ajout d’un système CI pour publier automatiquement les `.deb`.
-- Utilisation de `reprepro`, `aptly` ou `deb-s3` pour industrialiser.
-- Mise en place de HTTPS (via Nginx + Let's Encrypt).
+Le fichier `Release` est signé avec GPG pour permettre la vérification par les clients :
+
+```bash
+gpg --default-key "<ID_CLÉ>" -abs -o Release.gpg Release
+gpg --default-key "<ID_CLÉ>" --clearsign -o InRelease Release
+```
+
+### ✅ Justification
+
+- `Release.gpg` : signature détachée.
+- `InRelease` : signature intégrée.
+- Ces signatures assurent l’intégrité et l’authenticité du dépôt, comme recommandé par Debian.
+
+---
+
+## 🌍 Hébergement via Apache2
+
+Le dépôt est servi via HTTP grâce à un serveur Apache configuré sur un port dédié (ex. : `9000`). Le VirtualHost associé permet de séparer les services et d'ajuster la configuration :
+
+```apache
+<VirtualHost *:9000>
+    ServerName apt.dopolytech.fr
+    DocumentRoot /var/www/html/apt
+    <Directory /var/www/html/apt>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+### ✅ Justification
+
+- L’exposition du dépôt via HTTP est la méthode la plus courante.
+- L’utilisation d’un VirtualHost dédié assure la modularité du serveur web et permet une configuration fine.
+
+---
+
+## 🔑 Clé GPG publique
+
+La clé utilisée pour signer les métadonnées est exportée en format ASCII et rendue accessible :
+
+```bash
+gpg --export -a "Nom de la clé" > /var/www/html/apt/public.key
+```
+
+URL d'accès (réseau Polytech) : `http://cygnus.dopolytech.fr:9000/public.key`
+
+---
+
+## 🧩 Utilisation sur une machine cliente Debian/Ubuntu
+
+### 1. Import de la clé GPG :
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL http://cygnus.dopolytech.fr:9000/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/dodate.gpg > /dev/null
+```
+
+### 2. Ajout du dépôt APT :
+
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9000/ dodate main" | sudo tee /etc/apt/sources.list.d/dodate.list
+```
+
+### 3. Mise à jour de la liste des paquets :
+
+```bash
+sudo apt update
+```
+
+### ✅ Justification
+
+- Le placement de la clé dans `/etc/apt/keyrings/` et l’utilisation de l’option `signed-by` assurent que seule cette clé sera utilisée pour ce dépôt, renforçant la sécurité.
+- L’option `sources.list.d/` permet une gestion propre et modulaire des sources.
+
+---
+
+## 🔄 Automatisation du dépôt
+
+Des scripts automatisent les étapes suivantes :
+
+- **build-dodate-deb.sh** : génère le paquet `.deb` de l’application.
+- **deploy-apt-repositery.sh** : met à jour les fichiers `Packages`, `Release`, `InRelease` et `Release.gpg`.
+- **apache2-auto-deploy.sh** : déploie le dépôt sur le serveur Apache.
+
+### ✅ Justification
+
+Automatiser ces étapes garantit :
+
+- Une régularité dans le format et le contenu du dépôt.
+- Moins d’erreurs humaines.
+- Un déploiement rapide en cas de mise à jour de version.
+
+---
+
+## ✅ Conformité Debian
+
+Ce dépôt :
+
+- Suit l’arborescence Debian (`dists/`, `pool/`, clés GPG).
+- Utilise les outils Debian (`dpkg-scanpackages`, `apt-ftparchive`, `gpg`).
+- Met en œuvre des mécanismes de sécurité adaptés (`signed-by`, signature GPG).
+- Fournit une documentation claire pour les utilisateurs clients.
+
+Il est donc **entièrement conforme** aux standards Debian.
+
+---
+
+## 📚 Ressources utiles
+
+- [DebianRepository/Format — Debian Wiki](https://wiki.debian.org/DebianRepository/Format)
+- [SecureApt — Debian Wiki](https://wiki.debian.org/SecureApt)
+- [apt-ftparchive(1) — Debian Manpages](https://manpages.debian.org/apt-ftparchive)
+
+---
+
+Si vous avez des questions ou souhaitez contribuer à l’amélioration du dépôt, n’hésitez pas à ouvrir une **issue** ou une **pull request**.
