@@ -114,13 +114,13 @@ Access URL (Polytech network): `http://cygnus.dopolytech.fr:9000/public.key`
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL http://cygnus.dopolytech.fr:9000/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/dodate.gpg > /dev/null
+curl -fsSL http://cygnus.dopolytech.fr:9000/apt/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/dodate.gpg > /dev/null
 ```
 
 ### 2. Add the APT repository:
 
 ```bash
-echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9000/ dodate main" | sudo tee /etc/apt/sources.list.d/dodate.list
+echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9000/apt dodate main" | sudo tee /etc/apt/sources.list.d/dodate.list
 ```
 
 ### 3. Update the package list:
