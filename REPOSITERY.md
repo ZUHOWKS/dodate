@@ -1,4 +1,4 @@
-# 📦 REPOSITORY.md
+# 📦 Documentation Dodate APT Repositery
 
 **Documentation for the APT repository for the `dodate` application**
 
