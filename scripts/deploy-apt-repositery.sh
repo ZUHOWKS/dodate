@@ -98,7 +98,7 @@ mkdir -p "$REPO_NAME"
 mkdir -p "$REPO_NAME/$REL_POOL_DIR"
 mkdir -p "$REPO_NAME/$REL_DIST_DIR/$COMPONENT/binary-$ARCH"
 
-cp "$DEB_FILE" "$REPO_NAME/$REL_POOL_DIR/$REPO_NAME/"
+cp "$DEB_FILE" "$REPO_NAME/$REL_POOL_DIR/"
 
 cd "$REPO_NAME"
 
