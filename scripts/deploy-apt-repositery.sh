@@ -58,13 +58,21 @@ check_dependencies() {
 
 # Vérification des arguments
 if [ $# -lt 2 ]; then
-  print_error "Usage: $0 <path/to/package.deb> <GPG_KEY_ID>"
+  print_error "Usage: $0 <path/to/package.deb> <GPG_KEY_ID> [--quiet]"
   print_info "Exemple: $0 dodate.deb 82B7DA8E7DDFC3E0D77C6D6C461A393C63B5DF4A"
   exit 1
 fi
 
 DEB_FILE="$1"
 GPG_KEY_ID="$2"
+QUIET_MODE="$3"
+
+# Mode silencieux si --quiet est passé en argument
+if [ "$QUIET_MODE" = "--quiet" ]; then
+    print_info() { :; }
+    print_success() { :; }
+    print_warning() { :; }
+fi
 
 # Vérification du fichier .deb
 if [ ! -f "$DEB_FILE" ]; then
@@ -117,16 +125,18 @@ gpg --default-key "$GPG_KEY_ID" --clearsign -o "$REL_DIST_DIR/InRelease" "$REL_D
 # Export gpg public key
 gpg --export -a "$GPG_KEY_ID" > "public.key"
 
-print_success "Dépôt APT généré avec succès!"
-print_info "📁 Structure créée dans : $REPO_NAME/"
-print_info "🔑 Clé publique : $REPO_NAME/public.key"
-print_info "📦 Package déployé : $(basename "$DEB_FILE")"
-echo ""
-print_info "Pour déployer sur votre serveur :"
-print_info "  rsync -av $REPO_NAME/ user@<your-ip>:/var/www/html/apt/"
-echo ""
-print_info "Pour utiliser ce dépôt sur un client :"
-print_info "  curl -fsSL http://<your-ip>:<port>/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg"
-print_info "  echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://<your-ip>:<port>/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list"
-print_info "  sudo apt update && sudo apt install dodate"
+if [ "$QUIET_MODE" != "--quiet" ]; then
+    echo -e "${GREEN}✅ Dépôt APT généré avec succès!${NC}"
+    echo -e "${BLUE}ℹ️  📁 Structure créée dans : $REPO_NAME/${NC}"
+    echo -e "${BLUE}ℹ️  🔑 Clé publique : $REPO_NAME/public.key${NC}"
+    echo -e "${BLUE}ℹ️  📦 Package déployé : $(basename "$DEB_FILE")${NC}"
+    echo ""
+    echo -e "${BLUE}ℹ️  Pour déployer sur votre serveur :${NC}"
+    echo -e "${BLUE}ℹ️    rsync -av $REPO_NAME/ user@<your-ip>:/var/www/html/apt/${NC}"
+    echo ""
+    echo -e "${BLUE}ℹ️  Pour utiliser ce dépôt sur un client :${NC}"
+    echo -e "${BLUE}ℹ️    curl -fsSL http://<your-ip>:<port>/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg${NC}"
+    echo -e "${BLUE}ℹ️    echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://<your-ip>:<port>/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list${NC}"
+    echo -e "${BLUE}ℹ️    sudo apt update && sudo apt install dodate${NC}"
+fi
 
