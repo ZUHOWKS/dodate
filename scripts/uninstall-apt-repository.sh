@@ -52,29 +52,29 @@ check_root() {
 # Fonction pour trouver et supprimer les sites Apache liés au repository
 remove_apache_sites() {
     local sites_found=0
-    
+
     print_info "🔍 Recherche des sites Apache pour le repository dodate..."
-    
+
     # Chercher tous les fichiers de configuration apt-repo-*
     for conf_file in "$APACHE_SITES_DIR"/apt-repo-*.conf; do
         if [ -f "$conf_file" ]; then
             sites_found=$((sites_found + 1))
             local site_name=$(basename "$conf_file")
             local port=$(echo "$site_name" | sed 's/apt-repo-\([0-9]*\)\.conf/\1/')
-            
+
             print_info "📋 Site trouvé : $site_name (port $port)"
-            
+
             if confirm "Supprimer le site $site_name ?"; then
                 # Désactiver le site s'il est activé
                 if [ -L "$APACHE_ENABLED_DIR/$site_name" ]; then
                     print_info "🔄 Désactivation du site $site_name..."
                     a2dissite "$site_name" 2>/dev/null || true
                 fi
-                
+
                 # Supprimer le fichier de configuration
                 print_info "🗑️  Suppression de $conf_file..."
                 rm -f "$conf_file"
-                
+
                 # Supprimer le port du fichier ports.conf si nécessaire
                 if [ -n "$port" ] && grep -q "Listen $port" "$PORTS_CONF"; then
                     if confirm "Supprimer le port $port de la configuration Apache ?"; then
@@ -82,12 +82,12 @@ remove_apache_sites() {
                         sed -i "/^Listen $port$/d" "$PORTS_CONF"
                     fi
                 fi
-                
+
                 print_success "Site $site_name supprimé"
             fi
         fi
     done
-    
+
     if [ $sites_found -eq 0 ]; then
         print_info "Aucun site Apache trouvé pour le repository dodate"
     fi
@@ -97,15 +97,15 @@ remove_apache_sites() {
 remove_apt_repository() {
     if [ -d "$APT_REPO_DIR" ]; then
         print_info "📁 Repository APT trouvé : $APT_REPO_DIR"
-        
+
         # Afficher la taille du repository
         local repo_size=$(du -sh "$APT_REPO_DIR" 2>/dev/null | cut -f1 || echo "inconnu")
         print_info "📊 Taille du repository : $repo_size"
-        
+
         # Afficher le contenu
         print_info "📋 Contenu du repository :"
         ls -la "$APT_REPO_DIR" 2>/dev/null || true
-        
+
         if confirm "Supprimer complètement le repository APT ($APT_REPO_DIR) ?"; then
             # Créer une sauvegarde si demandé
             if confirm "Créer une sauvegarde avant suppression ?"; then
@@ -114,7 +114,7 @@ remove_apt_repository() {
                 cp -r "$APT_REPO_DIR" "$backup_dir"
                 print_success "Sauvegarde créée : $backup_dir"
             fi
-            
+
             print_info "🗑️  Suppression du repository APT..."
             rm -rf "$APT_REPO_DIR"
             print_success "Repository APT supprimé"
@@ -149,7 +149,7 @@ show_client_cleanup_instructions() {
 check_apache_status() {
     if systemctl is-active --quiet apache2; then
         print_info "✅ Apache2 est en cours d'exécution"
-        
+
         if confirm "Recharger la configuration Apache2 ?"; then
             print_info "🔄 Rechargement de la configuration Apache2..."
             systemctl reload apache2
@@ -164,62 +164,62 @@ check_apache_status() {
 main() {
     print_info "🧹 Désinstallation du repository APT dodate"
     echo ""
-    
+
     check_root
-    
+
     # Afficher un résumé de ce qui sera supprimé
     print_info "🔍 Analyse du système..."
-    
+
     local items_to_remove=()
-    
+
     if [ -d "$APT_REPO_DIR" ]; then
         items_to_remove+=("Repository APT ($APT_REPO_DIR)")
     fi
-    
+
     for conf_file in "$APACHE_SITES_DIR"/apt-repo-*.conf; do
         if [ -f "$conf_file" ]; then
             items_to_remove+=("Configuration Apache : $(basename "$conf_file")")
         fi
     done
-    
+
     if [ ${#items_to_remove[@]} -eq 0 ]; then
         print_info "Aucun élément du repository dodate trouvé sur le système"
         exit 0
     fi
-    
+
     echo ""
     print_info "📋 Éléments détectés à supprimer :"
     for item in "${items_to_remove[@]}"; do
         echo -e "  ${YELLOW}• $item${NC}"
     done
     echo ""
-    
+
     if ! confirm "Continuer avec la désinstallation ?"; then
         print_info "Désinstallation annulée"
         exit 0
     fi
-    
+
     echo ""
     print_info "🚀 Début de la désinstallation..."
-    
+
     # Supprimer les sites Apache
     remove_apache_sites
-    
+
     echo ""
-    
+
     # Supprimer le repository APT
     remove_apt_repository
-    
+
     echo ""
-    
+
     # Vérifier et recharger Apache
     check_apache_status
-    
+
     echo ""
-    
+
     # Afficher les instructions de nettoyage client
     show_client_cleanup_instructions
-    
+
     print_success "🎉 Désinstallation terminée avec succès !"
     print_info "Apache2 est toujours installé et configuré pour d'autres usages"
 }
