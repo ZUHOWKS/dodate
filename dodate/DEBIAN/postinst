@@ -1,0 +1,18 @@
+#!/bin/sh
+# postinst script for dodate
+
+set -e
+
+# Create a symbolic link in /usr/bin
+# Remove existing link if it exists and create a new one
+if [ -e /usr/bin/dodate ] || [ -L /usr/bin/dodate ]; then
+    rm -f /usr/bin/dodate
+fi
+ln -s /usr/lib/dodate/dodate.py /usr/bin/dodate
+
+# Update file permissions for the script and virtual environment
+chmod 755 /usr/lib/dodate/dodate.py
+chmod 755 /usr/lib/dodate/dodate_env/bin/python3
+chmod -R 755 /usr/lib/dodate/dodate_env/bin/
+
+exit 0

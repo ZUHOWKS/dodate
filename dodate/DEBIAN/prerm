@@ -1,0 +1,11 @@
+#!/bin/sh
+# prerm script for dodate
+
+set -e
+
+# Remove the symbolic link from /usr/bin
+if [ -L /usr/bin/dodate ]; then
+    rm -f /usr/bin/dodate
+fi
+
+exit 0

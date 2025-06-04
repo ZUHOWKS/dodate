@@ -1,0 +1,11 @@
+Package: dodate
+Version: 1.0.1
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.6)
+Maintainer: Joris VILARDELL <joris.vilardell01@etu.umontpellier.fr>
+Description: Display current time in Réunion, Guadeloupe, and France
+ dodate is a small utility that displays the current local time
+ as well as the time in Réunion Island and Guadeloupe.
+ It provides a simple and colorful output in the terminal.
