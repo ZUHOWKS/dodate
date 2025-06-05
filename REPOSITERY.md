@@ -104,7 +104,7 @@ The key used to sign the metadata is exported in ASCII format and made accessibl
 gpg --export -a "Key Name" > /var/www/html/apt/public.key
 ```
 
-Access URL (Polytech network): `http://cygnus.dopolytech.fr:9000/public.key`
+Access URL (Polytech network): `http://cygnus.dopolytech.fr:9000/apt/public.key`
 
 ---
 

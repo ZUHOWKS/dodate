@@ -122,7 +122,7 @@ After deployment, your repository will be accessible at:
 
 - **Main URL**: `http://your-server:PORT/apt/`
 - **Public key**: `http://your-server:PORT/apt/public.key`
-- **Packages**: `http://your-server:PORT/apt/dodate/stable/main/binary-all/`
+- **Packages**: `http://your-server:PORT/apt/dodate/main/binary-all/`
 
 **Default port**: 8000
 
@@ -141,7 +141,7 @@ curl -fsSL http://YOUR-SERVER:PORT/apt/public.key | sudo gpg --dearmor -o /usr/s
 
 ```bash
 # Add the repository to your APT sources
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-SERVER:PORT/apt dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-SERVER:PORT/apt dodate main' | sudo tee /etc/apt/sources.list.d/dodate.list
 ```
 
 ### 3. Install the package
@@ -157,7 +157,7 @@ sudo apt install dodate
 ```bash
 # For a server at 192.168.1.100 port 8000
 curl -fsSL http://192.168.1.100:8000/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://192.168.1.100:8000/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://192.168.1.100:8000/apt/dodate main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update
 sudo apt install dodate
 ```
@@ -271,7 +271,7 @@ curl -I http://localhost:8000/apt/
 curl -I http://localhost:8000/apt/public.key
 
 # Test the packages
-curl -I http://localhost:8000/apt/dodate/stable/main/binary-all/Packages.gz
+curl -I http://localhost:8000/apt/dodate/main/binary-all/Packages.gz
 ```
 
 ### 3. Test installation
@@ -279,7 +279,7 @@ curl -I http://localhost:8000/apt/dodate/stable/main/binary-all/Packages.gz
 ```bash
 # On a client machine
 curl -fsSL http://YOUR-IP:8000/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-IP:8000/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://YOUR-IP:8000/apt dodate main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update
 apt list dodate
 sudo apt install dodate
@@ -368,7 +368,7 @@ sudo cp -r dodate/* /var/www/html/apt/
 /var/www/html/apt/
 ├── dodate/
 │   ├── dists/
-│   │   └── stable/
+│   │   └── dodate/
 │   │       ├── main/
 │   │       │   └── binary-all/
 │   │       │       ├── Packages
@@ -401,7 +401,7 @@ sudo ./scripts/apache2-auto-deploy.sh GPG_KEY_ID "" 9000
 
 # Client test
 curl -fsSL http://IP:PORT/apt/public.key | sudo gpg --dearmor -o /usr/share/keyrings/dodate.gpg
-echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://IP:PORT/apt/dodate stable main' | sudo tee /etc/apt/sources.list.d/dodate.list
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://IP:PORT/apt dodate main' | sudo tee /etc/apt/sources.list.d/dodate.list
 sudo apt update && sudo apt install dodate
 ```
 
