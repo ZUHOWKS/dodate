@@ -137,10 +137,12 @@ cp -r dodate/* "$APT_REPO_DIR/"
 
 # Vérifier la structure créée
 print_info "🔍 Vérification de la structure du repository..."
-if [ -d "$APT_REPO_DIR/dists/dodate/" ]; then
-    print_success "Structure correcte : dists/dodate/"
+if [ -d "$APT_REPO_DIR/dists/dodate/main/binary-all" ] && [ -d "$APT_REPO_DIR/pool/main/dodate" ]; then
+    print_success "Structure correcte : dists/dodate/main/binary-all/ et pool/main/dodate/"
 else
-    print_warning "Structure détectée : $(find "$APT_REPO_DIR/dists" -type d | head -5)"
+    print_warning "Structure détectée :"
+    print_warning "  dists: $(find "$APT_REPO_DIR/dists" -type d 2>/dev/null | head -3)"
+    print_warning "  pool: $(find "$APT_REPO_DIR/pool" -type d 2>/dev/null | head -3)"
 fi
 
 # Configurer les permissions pour Apache

@@ -4,7 +4,7 @@
 set -e  # Arrêter le script en cas d'erreur
 
 REPO_NAME="dodate"
-REL_POOL_DIR="pool/dodate"
+REL_POOL_DIR="pool/main/dodate"
 REL_DIST_DIR="dists/dodate"
 ARCH="all"
 COMPONENT="main"
