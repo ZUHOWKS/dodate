@@ -137,8 +137,8 @@ cp -r dodate/* "$APT_REPO_DIR/"
 
 # Vérifier la structure créée
 print_info "🔍 Vérification de la structure du repository..."
-if [ -d "$APT_REPO_DIR/dists/dodate/stable" ]; then
-    print_success "Structure correcte : dists/dodate/stable/"
+if [ -d "$APT_REPO_DIR/dists/dodate/" ]; then
+    print_success "Structure correcte : dists/dodate/"
 else
     print_warning "Structure détectée : $(find "$APT_REPO_DIR/dists" -type d | head -5)"
 fi

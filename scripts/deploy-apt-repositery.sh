@@ -110,13 +110,13 @@ gzip -kf "$REL_DIST_DIR/$COMPONENT/binary-$ARCH/Packages"
 
 # Générer le fichier Release
 apt-ftparchive \
-  -o APT::FTPArchive::Release::Origin="dodate" \
-  -o APT::FTPArchive::Release::Label="dodate" \
-  -o APT::FTPArchive::Release::Suite="stable" \
-  -o APT::FTPArchive::Release::Codename="stable" \
-  -o APT::FTPArchive::Release::Architectures="$ARCH" \
-  -o APT::FTPArchive::Release::Components="$COMPONENT" \
-  release "$REL_DIST_DIR" > "$REL_DIST_DIR/Release"
+    -o APT::FTPArchive::Release::Origin="dodate" \
+    -o APT::FTPArchive::Release::Label="dodate" \
+    -o APT::FTPArchive::Release::Suite="dodate" \
+    -o APT::FTPArchive::Release::Codename="dodate" \
+    -o APT::FTPArchive::Release::Architectures="$ARCH" \
+    -o APT::FTPArchive::Release::Components="$COMPONENT" \
+    release "$REL_DIST_DIR" > "$REL_DIST_DIR/Release"
 
 # Signer le fichier Release
 gpg --default-key "$GPG_KEY_ID" --detach-sign -o "$REL_DIST_DIR/Release.gpg" "$REL_DIST_DIR/Release"
