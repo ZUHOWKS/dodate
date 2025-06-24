@@ -57,7 +57,25 @@ apt-ftparchive release . > Release
 
 ---
 
-## Cryptographic Signature
+## APT Repository Security
+
+APT includes a security infrastructure called Secure APT, which verifies the integrity and authenticity of downloaded packages using a chain of trust based on GPG signatures. The mechanism relies on a signed `Release` file and checksum information in the `Packages` files.
+
+### Verification Process
+
+When a client runs `apt update`, APT performs the following checks:
+
+1. Downloads `Release.gpg` (detached GPG signature) and `InRelease` (inline signature).
+2. Verifies the signature using the repository public key in `/usr/share/keyrings/<repository>.gpg`.
+3. Extracts checksums (MD5, SHA256) for `Packages.gz` from the `Release` file.
+4. Computes and compares the checksum of the downloaded `Packages.gz`.
+5. Verifies the checksums of each `.deb` listed in `Packages`.
+
+If any check fails, APT will mark the repository or packages as unauthenticated.
+
+_Sources:_ [_Deb Pack Sign_](https://www.debian.org/doc/manuals/securing-debian-manual/deb-pack-sign.en.html)
+
+## Cryptographic Signing
 
 The `Release` file is signed with GPG to allow client verification:
 
@@ -65,12 +83,6 @@ The `Release` file is signed with GPG to allow client verification:
 gpg --default-key "<KEY_ID>" -abs -o Release.gpg Release
 gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
 ```
-
-### Justification
-
-- `Release.gpg`: detached signature.
-- `InRelease`: inline signature.
-- These signatures ensure the integrity and authenticity of the repository, as recommended by Debian.
 
 ---
 
@@ -171,6 +183,7 @@ It is therefore **fully compliant** with Debian standards.
 ## Useful Resources
 
 - [DebianRepository/Format — Debian Wiki](https://wiki.debian.org/DebianRepository/Format)
+- [Deb Pack Sign](https://www.debian.org/doc/manuals/securing-debian-manual/deb-pack-sign.en.html)
 - [SecureApt — Debian Wiki](https://wiki.debian.org/SecureApt)
 - [apt-ftparchive(1) — Debian Manpages](https://manpages.debian.org/apt-ftparchive)
 
