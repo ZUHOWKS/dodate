@@ -1,10 +1,10 @@
-# 🚀 Dodate APT Repository Deployment Guide
+# Dodate APT Repository Deployment Guide
 
 This guide explains how to automatically deploy an APT repository for the `dodate` package using the provided scripts.
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### 1. System dependencies
 
@@ -34,7 +34,7 @@ gpg --list-secret-keys --keyid-format LONG
 
 ---
 
-## 🛠️ Available scripts
+## Available scripts
 
 ### 1. `build-dodate-deb.sh`
 
@@ -55,7 +55,7 @@ Main automatic deployment script that:
 
 ---
 
-## 🚀 Quick deployment
+## Quick deployment
 
 ### Method 1: Full automatic deployment
 
@@ -92,7 +92,7 @@ sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID dodate.deb 3000
 
 ---
 
-## 📊 What happens automatically
+## What happens automatically
 
 ### 1. Package build
 
@@ -116,7 +116,7 @@ sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID dodate.deb 3000
 
 ---
 
-## 🌐 Repository access
+## Repository access
 
 After deployment, your repository will be accessible at:
 
@@ -128,7 +128,7 @@ After deployment, your repository will be accessible at:
 
 ---
 
-## 💻 Client configuration
+## Client configuration
 
 ### 1. Add the GPG key
 
@@ -164,7 +164,7 @@ sudo apt install dodate
 
 ---
 
-## 🔧 Manual step-by-step deployment
+## Manual step-by-step deployment
 
 If you prefer to control each step:
 
@@ -193,7 +193,7 @@ sudo chmod -R 755 /var/www/html/apt/
 
 ---
 
-## ⚙️ Manual Apache configuration
+## Manual Apache configuration
 
 If you want to configure Apache manually:
 
@@ -249,7 +249,7 @@ sudo systemctl restart apache2
 
 ---
 
-## 🔍 Verification and tests
+## Verification and tests
 
 ### 1. Check Apache
 
@@ -288,7 +288,7 @@ dodate
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common issues
 
@@ -344,7 +344,7 @@ sudo ./scripts/apache2-auto-deploy.sh YOUR_GPG_KEY_ID "" 9000
 
 ---
 
-## 🔄 Repository update
+## Repository update
 
 To add a new version of your package:
 
@@ -362,7 +362,7 @@ sudo cp -r dodate/* /var/www/html/apt/
 
 ---
 
-## 📝 Final repository structure
+## Final repository structure
 
 ```
 /var/www/html/apt/
@@ -384,7 +384,7 @@ sudo cp -r dodate/* /var/www/html/apt/
 
 ---
 
-## 🎯 Quick reference commands
+## Quick reference commands
 
 ```bash
 # Full automatic deployment

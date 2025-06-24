@@ -1,4 +1,4 @@
-# 📦 `dodate` Debian Package
+# `dodate` Debian Package
 
 This repository provides the necessary structure and tooling to package the `dodate` Python program into a `.deb` file, making it easily installable on Debian-based systems.
 
@@ -19,14 +19,14 @@ echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://cygnus.dopolytech.fr
 sudo apt update
 ```
 
-## 📚 Documentation
+## Documentation
 
 - 📦 **[Package Build Process](#-build-steps)** - Build instructions for the Debian package (this document)
 - 🖥️ **[Server Deployment Summary](./SERVER-DEPLOYMENT.md)** - Overview of server-side setup and maintenance on the official repositery
 - 📋 **[Repository Structure](./REPOSITERY.md)** - Detailed explanation of APT repository design and best practices
 - 🚀 **[Deployment Guide](./DEPLOY-REPOSITERY.md)** - Complete guide for deploying the APT repository with automated scripts
 
-## ⚙️ Project Structure
+## Project Structure
 
 - `dodate/` – Python source code
 - `debian/` – Debian packaging files (e.g., `control`, `postinst`, file structure)
@@ -34,7 +34,7 @@ sudo apt update
 
 ---
 
-## 🛠️ Manual Build Steps
+## Manual Build Steps
 
 ### 1. Build the `.deb` Package
 
@@ -120,7 +120,7 @@ dodate
 
 ---
 
-## 📄 Debian Package Details
+## Debian Package Details
 
 The `debian/control` file specifies:
 
@@ -135,7 +135,7 @@ The `debian/control` file specifies:
 
 ---
 
-## 🔒 Constraints
+## Constraints
 
 - The executable must reside under `/usr/lib/dodate`
 - A symlink must be present in `/usr/bin`

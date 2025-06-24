@@ -1,4 +1,4 @@
-# 📦 Documentation Dodate APT Repositery
+# Documentation Dodate APT Repositery
 
 **Documentation for the APT repository for the `dodate` application**
 
@@ -6,7 +6,7 @@ This documentation explains the setup, structure, security, and usage of a **cus
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 The repository follows the recommended Debian hierarchy:
 
@@ -28,7 +28,7 @@ The repository follows the recommended Debian hierarchy:
 └── public.key
 ```
 
-### ✅ Justifications
+### Justifications
 
 - **`dists/`**: Contains the index and metadata files used by APT (`Release`, `InRelease`, `Release.gpg`, etc.).
 - **`pool/`**: Location for `.deb` files. Allows centralized and non-redundant package management.
@@ -36,7 +36,7 @@ The repository follows the recommended Debian hierarchy:
 
 ---
 
-## 🛠️ Index File Generation
+## Index File Generation
 
 The repository metadata is generated using standard Debian tools:
 
@@ -49,7 +49,7 @@ gzip -k -f Packages
 apt-ftparchive release . > Release
 ```
 
-### ✅ Justification
+### Justification
 
 - `dpkg-scanpackages` creates the `Packages` file, used to list available packages.
 - `apt-ftparchive` generates a `Release` file with the necessary checksums (`MD5Sum`, `SHA256`, etc.).
@@ -57,7 +57,7 @@ apt-ftparchive release . > Release
 
 ---
 
-## 🔐 Cryptographic Signature
+## Cryptographic Signature
 
 The `Release` file is signed with GPG to allow client verification:
 
@@ -66,7 +66,7 @@ gpg --default-key "<KEY_ID>" -abs -o Release.gpg Release
 gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
 ```
 
-### ✅ Justification
+### Justification
 
 - `Release.gpg`: detached signature.
 - `InRelease`: inline signature.
@@ -74,7 +74,7 @@ gpg --default-key "<KEY_ID>" --clearsign -o InRelease Release
 
 ---
 
-## 🌍 Hosting via Apache2
+## Hosting via Apache2
 
 The repository is served over HTTP using an Apache server configured on a dedicated port (e.g., `9000`). The associated VirtualHost allows for service separation and fine-tuned configuration:
 
@@ -90,14 +90,14 @@ The repository is served over HTTP using an Apache server configured on a dedica
 </VirtualHost>
 ```
 
-### ✅ Justification
+### Justification
 
 - Exposing the repository via HTTP is the most common method.
 - Using a dedicated VirtualHost ensures modularity of the web server and allows for fine configuration.
 
 ---
 
-## 🔑 Public GPG Key
+## Public GPG Key
 
 The key used to sign the metadata is exported in ASCII format and made accessible:
 
@@ -109,7 +109,7 @@ Access URL (Polytech network): `http://cygnus.dopolytech.fr:9000/apt/public.key`
 
 ---
 
-## 🧩 Usage on a Debian/Ubuntu Client Machine
+## Usage on a Debian/Ubuntu Client Machine
 
 ### 1. Import the GPG key:
 
@@ -130,14 +130,14 @@ echo "deb [signed-by=/etc/apt/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9
 sudo apt update
 ```
 
-### ✅ Justification
+### Justification
 
 - Placing the key in `/etc/apt/keyrings/` and using the `signed-by` option ensures that only this key will be used for this repository, enhancing security.
 - The use of `sources.list.d/` allows for clean and modular source management.
 
 ---
 
-## 🔄 Repository Automation
+## Repository Automation
 
 Scripts automate the following steps:
 
@@ -145,7 +145,7 @@ Scripts automate the following steps:
 - **deploy-apt-repositery.sh**: updates the `Packages`, `Release`, `InRelease`, and `Release.gpg` files.
 - **apache2-auto-deploy.sh**: deploys the repository on the Apache server.
 
-### ✅ Justification
+### Justification
 
 Automating these steps ensures:
 
@@ -155,7 +155,7 @@ Automating these steps ensures:
 
 ---
 
-## ✅ Debian Compliance
+## Debian Compliance
 
 This repository:
 
@@ -168,7 +168,7 @@ It is therefore **fully compliant** with Debian standards.
 
 ---
 
-## 📚 Useful Resources
+## Useful Resources
 
 - [DebianRepository/Format — Debian Wiki](https://wiki.debian.org/DebianRepository/Format)
 - [SecureApt — Debian Wiki](https://wiki.debian.org/SecureApt)

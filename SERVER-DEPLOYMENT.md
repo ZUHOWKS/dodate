@@ -1,4 +1,4 @@
-# 🖥️ Official Repository Server Setup
+# Official Repository Server Setup
 
 This document summarizes all operations performed on the server to host and maintain the official `dodate` APT repository.
 
@@ -144,5 +144,3 @@ mv /var/www/html/apt /var/www/html/apt.backup.$(date +"%Y%m%d_%H%M%S")
 Automated by `apache2-auto-deploy.sh`.
 
 ---
-
-_End of server setup summary._
