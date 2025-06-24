@@ -21,11 +21,10 @@ sudo apt update
 
 ## 📚 Documentation
 
+- 📦 **[Package Build Process](#-build-steps)** - Build instructions for the Debian package (this document)
+- 🖥️ **[Server Deployment Summary](./SERVER-DEPLOYMENT.md)** - Overview of server-side setup and maintenance on the official repositery
 - 📋 **[Repository Structure](./REPOSITERY.md)** - Detailed explanation of APT repository design and best practices
 - 🚀 **[Deployment Guide](./DEPLOY-REPOSITERY.md)** - Complete guide for deploying the APT repository with automated scripts
-- 📦 **[Package Build Process](#-build-steps)** - Build instructions for the Debian package (this document)
-
----
 
 ## ⚙️ Project Structure
 
