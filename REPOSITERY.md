@@ -22,8 +22,9 @@ The repository follows the recommended Debian hierarchy:
 │       ├── Release.gpg
 │       └── InRelease
 ├── pool/
-│   └── dodate/
-│       └── dodate_1.0.1_all.deb
+│   └── main/
+│       └── dodate/
+│           └── dodate_1.0.1_all.deb
 └── public.key
 ```
 

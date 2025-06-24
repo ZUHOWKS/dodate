@@ -4,6 +4,21 @@ This repository provides the necessary structure and tooling to package the `dod
 
 `dodate` is a small utility that displays the current local time as well as the time in Réunion Island 🇷🇪.
 
+# Official Repository
+
+The `dodate` APT repository is hosted at [http://cygnus.dopolytech.fr:9000/apt/](http://cygnus.dopolytech.fr:9000/apt/) and is only accessible via the Polytech VPN.
+
+To add this repository to your system, import the public key and enable the source:
+
+```bash
+wget -qO - http://cygnus.dopolytech.fr:9000/apt/public.key | sudo tee /usr/share/keyrings/dodate.gpg
+
+echo 'deb [signed-by=/usr/share/keyrings/dodate.gpg] http://cygnus.dopolytech.fr:9000/apt dodate main' \
+  | sudo tee /etc/apt/sources.list.d/dodate.list
+
+sudo apt update
+```
+
 ## 📚 Documentation
 
 - 📋 **[Repository Structure](./REPOSITERY.md)** - Detailed explanation of APT repository design and best practices

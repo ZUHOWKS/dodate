@@ -366,17 +366,17 @@ sudo cp -r dodate/* /var/www/html/apt/
 
 ```
 /var/www/html/apt/
-├── dodate/
-│   ├── dists/
-│   │   └── dodate/
-│   │       ├── main/
-│   │       │   └── binary-all/
-│   │       │       ├── Packages
-│   │       │       └── Packages.gz
-│   │       ├── Release
-│   │       ├── Release.gpg
-│   │       └── InRelease
-│   └── pool/
+├── dists/
+│   └── dodate/
+│       ├── main/
+│       │   └── binary-all/
+│       │       ├── Packages
+│       │       └── Packages.gz
+│       ├── Release
+│       ├── Release.gpg
+│       └── InRelease
+├── pool/
+│   └── main/
 │       └── dodate/
 │           └── dodate_1.0.1_all.deb
 └── public.key
