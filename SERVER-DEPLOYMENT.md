@@ -86,7 +86,9 @@ sudo chmod +x /usr/local/bin/*.sh
 
 ---
 
-## 5. GPG Key Management
+## 5. GPG Key to Sign Repository
+
+To ensure the authenticity and integrity of the repository metadata, the `Release` file must be signed:
 
 - As root, generate or use an existing GPG key:
 
@@ -95,17 +97,24 @@ sudo chmod +x /usr/local/bin/*.sh
   gpg --full-generate-key
   ```
 
-- Export the public key for client access:
+- Export the public key for client distribution:
 
   ```bash
   gpg --armor --export <KEY_ID> > /var/www/html/apt/public.key
   ```
 
-- The private key remains in root's keyring at `/root/.gnupg/` and is used by scripts for signing.
+- The private key remains in root's keyring at `/root/.gnupg/` and is used by the deployment scripts to sign files.
 
-- Verify the public key URL:
+- Verify that the public key is accessible:
+
   ```bash
   curl -I http://<SERVER_IP>:9000/apt/public.key
+  ```
+
+- Sign the `Release` file (executed automatically by `deploy-apt-repositery.sh`):
+  ```bash
+  gpg --default-key "$GPG_KEY_ID" --detach-sign -o "$REL_DIST_DIR/Release.gpg" "$REL_DIST_DIR/Release"
+  gpg --default-key "$GPG_KEY_ID" --clearsign -o "$REL_DIST_DIR/InRelease" "$REL_DIST_DIR/Release"
   ```
 
 ---
